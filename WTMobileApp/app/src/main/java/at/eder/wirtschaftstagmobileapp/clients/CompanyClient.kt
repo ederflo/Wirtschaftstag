@@ -15,7 +15,7 @@ interface CompanyClient {
     @GET("$path/{id}")
     fun getOneById(@Path("id") id: Long?): Call<Company?>
 
-    @Headers(path)
-    @PUT("/api/companies")
+    @Headers( "Content-Type: application/json" )
+    @PATCH(path)
     fun save(@Body company: Company): Call<Company>
 }

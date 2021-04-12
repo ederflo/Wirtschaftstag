@@ -57,6 +57,7 @@
                 android:layout_marginEnd="25dp"
                 android:ems="10"
                 android:inputType="none"
+                android:enabled="false"
                 android:text="Id" />
 
             <TextView

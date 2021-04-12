@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Wirtschaftstag</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Wirtschaftstag</string>
+    <string name="nav_header_subtitle">Deine Admin App für deinen Wirtschaftstag</string>
+    <string name="nav_header_desc">Navigation</string>
+    <string name="action_settings">Einstellungen</string>
+
+    <string name="menu_event">Firmentage</string>
+    <string name="menu_login">Einstellungen</string>
+    <string name="menu_company">Firmen</string>
+    <string name="menu_department">Abteilung</string>
+    <string name="menu_user">Benutzer</string>
+    <string name="menu_mail">E-Mail</string>
+    <string name="menu_participation">Teilnahmen</string>
+</resources>

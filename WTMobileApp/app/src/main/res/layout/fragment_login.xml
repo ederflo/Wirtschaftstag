@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <EditText
+        android:id="@+id/txbAPIProtocol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#5E5E5E"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="http"
+        android:textColor="#FF00DD"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/txbAPIIP"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txbAPIIP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#5E5E5E"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="127.0.0.1"
+        android:textColor="#FF00DD"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/txbAPIPort"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txbAPIProtocol" />
+
+    <EditText
+        android:id="@+id/txbAPIPort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#5E5E5E"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="8080"
+        android:textColor="#FF00DD"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/btnConnect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txbAPIIP" />
+
+    <Button
+        android:id="@+id/btnConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#5E5E5E"
+        android:backgroundTint="#5E5E5E"
+        android:hapticFeedbackEnabled="false"
+        android:text="Connect"
+        android:textColor="#FF00DD"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txbAPIPort"
+        app:rippleColor="#5E5E5E" />
+</androidx.constraintlayout.widget.ConstraintLayout>

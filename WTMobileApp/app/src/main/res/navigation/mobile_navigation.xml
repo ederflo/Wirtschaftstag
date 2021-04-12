@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_login">
+
+    <fragment
+        android:id="@+id/nav_event"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.event.EventFragment"
+        android:label="@string/menu_event"
+        tools:layout="@layout/fragment_event" />
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.loginFragment.LoginFragment"
+        android:label="@string/menu_login" >
+        <action
+            android:id="@+id/action_nav_login_to_nav_event"
+            app:destination="@id/nav_event" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_company"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.company.CompanyFragment"
+        android:label="@string/menu_company"
+        tools:layout="@layout/fragment_company" />
+    <fragment
+        android:id="@+id/nav_department"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.department.DepartmentFragment"
+        android:label="@string/menu_department"
+        tools:layout="@layout/fragment_department" />
+    <fragment
+        android:id="@+id/nav_user"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.user.UserFragment"
+        android:label="@string/menu_user"
+        tools:layout="@layout/fragment_user" />
+    <fragment
+        android:id="@+id/nav_mail"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.mail.MailFragment"
+        android:label="@string/menu_mail"
+        tools:layout="@layout/fragment_mail" />
+    <fragment
+        android:id="@+id/nav_participation"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.participation.ParticipationFragment"
+        android:label="@string/menu_participation"
+        tools:layout="@layout/fragment_participation" />
+</navigation>

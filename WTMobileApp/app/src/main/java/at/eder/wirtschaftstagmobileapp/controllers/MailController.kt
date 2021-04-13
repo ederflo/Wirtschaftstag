@@ -50,7 +50,7 @@ public class MailController {
         call.enqueue(object : Callback<Mail?> {
             override fun onResponse(call: Call<Mail?>, response: Response<Mail?>) {
                 try {
-                    if (response.code() == 201) {
+                    if (response.code() == 200) {
                         callback(response.body())
                     }
                 } catch(ex: Throwable) {

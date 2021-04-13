@@ -50,7 +50,7 @@ class DepartmentController {
         call.enqueue(object : Callback<Department?> {
             override fun onResponse(call: Call<Department?>, response: Response<Department?>) {
                 try {
-                    if (response.code() == 201) {
+                    if (response.code() == 200) {
                         callback(response.body())
                     }
                 } catch(ex: Throwable) {

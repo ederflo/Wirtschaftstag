@@ -50,7 +50,7 @@ class EventController {
         call.enqueue(object : Callback<Event?> {
             override fun onResponse(call: Call<Event?>, response: Response<Event?>) {
                 try {
-                    if (response.code() == 201) {
+                    if (response.code() == 200) {
                         callback(response.body())
                     }
                 } catch(ex: Throwable) {

@@ -50,7 +50,7 @@ public class UserController {
         call.enqueue(object : Callback<User?> {
             override fun onResponse(call: Call<User?>, response: Response<User?>) {
                 try {
-                    if (response.code() == 201) {
+                    if (response.code() == 200) {
                         callback(response.body())
                     }
                 } catch(ex: Throwable) {

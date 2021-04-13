@@ -50,7 +50,7 @@ class CompanyController {
         call.enqueue(object : Callback<Company?> {
             override fun onResponse(call: Call<Company?>, response: Response<Company?>) {
                 try {
-                    if (response.code() == 201) {
+                    if (response.code() == 200) {
                         callback(response.body())
                     }
                 } catch(ex: Throwable) {

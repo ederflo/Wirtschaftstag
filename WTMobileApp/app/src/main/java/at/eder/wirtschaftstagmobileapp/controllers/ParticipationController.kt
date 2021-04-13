@@ -50,7 +50,7 @@ public class ParticipationController {
         call.enqueue(object : Callback<Participation?> {
             override fun onResponse(call: Call<Participation?>, response: Response<Participation?>) {
                 try {
-                    if (response.code() == 201) {
+                    if (response.code() == 200) {
                         callback(response.body())
                     }
                 } catch(ex: Throwable) {

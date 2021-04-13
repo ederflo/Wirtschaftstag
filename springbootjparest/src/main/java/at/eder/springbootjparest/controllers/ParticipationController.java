@@ -22,10 +22,10 @@ public class ParticipationController {
     @GetMapping("/{id}")
     public Participation getParticipationById(@PathVariable Long id) { return svc.getOne(id); }
 
-    @PostMapping("/")
+    @PostMapping()
     public Participation createParticipation(@RequestBody Participation participation) { return svc.createOrUpdateOne(participation); }
 
-    @PutMapping("/")
+    @PutMapping()
     public Participation updateParticipation(@RequestBody Participation participation) { return svc.createOrUpdateOne(participation); }
 
     @DeleteMapping("/{id}")

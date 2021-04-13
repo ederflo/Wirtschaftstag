@@ -22,10 +22,10 @@ public class CompanyController {
     @GetMapping("/{id}")
     public Company getCompanyById(@PathVariable Long id) { return svc.getOne(id); }
 
-    @PostMapping("/")
+    @PostMapping()
     public Company createCompany(@RequestBody Company company) { return svc.createOrUpdateOne(company); }
 
-    @PutMapping("/")
+    @PutMapping()
     public Company updateCompany(@RequestBody Company company) { return svc.createOrUpdateOne(company); }
 
     @DeleteMapping("/{id}")

@@ -20,10 +20,10 @@ public class MailController {
     @GetMapping("/{id}")
     public Mail getMailById(@PathVariable Long id) { return svc.getOne(id); }
 
-    @PostMapping("/")
+    @PostMapping()
     public Mail createMail(@RequestBody Mail mail) { return svc.createOrUpdateOne(mail); }
 
-    @PutMapping("/")
+    @PutMapping()
     public Mail updateMail(@RequestBody Mail mail) { return svc.createOrUpdateOne(mail); }
 
     @DeleteMapping("/{id}")

@@ -22,10 +22,10 @@ public class TimeSlotController {
     @GetMapping("/{id}")
     public TimeSlot getTimeSlotById(@PathVariable Long id) { return svc.getOne(id); }
 
-    @PostMapping("/")
+    @PostMapping()
     public TimeSlot createTimeSlot(@RequestBody TimeSlot timeSlot) { return svc.createOrUpdateOne(timeSlot); }
 
-    @PutMapping("/")
+    @PutMapping()
     public TimeSlot updateTimeSlot(@RequestBody TimeSlot timeSlot) { return svc.createOrUpdateOne(timeSlot); }
 
     @DeleteMapping("/{id}")

@@ -20,10 +20,10 @@ public class DepartmentController {
     @GetMapping("/{id}")
     public Department getDepartmentById(@PathVariable Long id) { return svc.getOne(id); }
 
-    @PostMapping("/")
+    @PostMapping()
     public Department createDepartment(@RequestBody Department department) { return svc.createOrUpdateOne(department); }
 
-    @PutMapping("/")
+    @PutMapping()
     public Department updateDepartment(@RequestBody Department department) { return svc.createOrUpdateOne(department); }
 
     @DeleteMapping("/{id}")

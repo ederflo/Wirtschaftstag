@@ -22,10 +22,10 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) { return svc.getOne(id); }
 
-    @PostMapping("/")
+    @PostMapping()
     public User createUser(@RequestBody User user) { return svc.createOrUpdateOne(user); }
 
-    @PutMapping("/")
+    @PutMapping()
     public User updateUser(@RequestBody User user) { return svc.createOrUpdateOne(user); }
 
     @DeleteMapping("/{id}")

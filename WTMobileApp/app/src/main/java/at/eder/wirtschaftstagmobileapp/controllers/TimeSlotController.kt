@@ -50,7 +50,7 @@ public class  TimeSlotController {
         call.enqueue(object : Callback<TimeSlot?> {
             override fun onResponse(call: Call<TimeSlot?>, response: Response<TimeSlot?>) {
                 try {
-                    if (response.code() == 201) {
+                    if (response.code() == 200) {
                         callback(response.body())
                     }
                 } catch(ex: Throwable) {

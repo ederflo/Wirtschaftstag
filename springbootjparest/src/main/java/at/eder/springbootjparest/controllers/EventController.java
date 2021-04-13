@@ -22,10 +22,10 @@ public class EventController {
     @GetMapping("/{id}")
     public Event getEventById(@PathVariable Long id) { return svc.getOne(id); }
 
-    @PostMapping("/")
+    @PostMapping()
     public Event createEvent(@RequestBody Event event) { return svc.createOrUpdateOne(event); }
 
-    @PutMapping("/")
+    @PutMapping()
     public Event updateEvent(@RequestBody Event event) { return svc.createOrUpdateOne(event); }
 
     @DeleteMapping("/{id}")

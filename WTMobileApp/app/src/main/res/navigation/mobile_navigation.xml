@@ -31,7 +31,11 @@
         android:id="@+id/nav_company_create"
         android:name="at.eder.wirtschaftstagmobileapp.ui.company.CompanyCreateFragment"
         android:label="Firma erstellen"
-        tools:layout="@layout/fragment_company_create" />
+        tools:layout="@layout/fragment_company_create" >
+        <action
+            android:id="@+id/action_nav_company_create_to_nav_company"
+            app:destination="@id/nav_company" />
+    </fragment>
     <fragment
         android:id="@+id/nav_department"
         android:name="at.eder.wirtschaftstagmobileapp.ui.department.DepartmentFragment"

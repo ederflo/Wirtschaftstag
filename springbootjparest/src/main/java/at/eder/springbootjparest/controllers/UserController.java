@@ -16,7 +16,12 @@ public class UserController {
     private UserServiceImpl svc;
 
     @GetMapping()
-    public List<User> getAllUsers() { return svc.getAll(); }
+    public List<User> getAllUsers(@RequestParam String userType) {
+        if (userType != null && !userType.isEmpty()) {
+            return svc.getByUserType(userType);
+        }
+        return svc.getAll();
+    }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) { return svc.getOne(id); }

@@ -12,6 +12,9 @@ interface UserClient {
     @GET(path)
     fun getAll() : Call<List<User>>
 
+    @GET(path)
+    fun getAllByUserType(@Query("userType") userType: String?) : Call<List<User>>
+
     @GET("${path}/{id}")
     fun getOneById(@Path("id") id: Long?): Call<User?>
 

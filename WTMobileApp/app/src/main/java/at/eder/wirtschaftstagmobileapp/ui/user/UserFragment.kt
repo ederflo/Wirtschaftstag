@@ -47,7 +47,7 @@ class UserFragment : Fragment() {
         val spinnerUsers = view?.findViewById<Spinner>(R.id.spinnerUsers)
         if (spinnerUsers != null) {
             GlobalScope.launch {
-                UserController().getAll(
+                UserController().getAllByUserType(UserTypes.admin,
                         { users ->
                             try {
                                 if (users != null) {

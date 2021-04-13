@@ -19,6 +19,10 @@ public class UserServiceImpl implements UserService {
         return repo.findAll();
     }
 
+    public List<User> getByUserType(String usertype) {
+        return repo.findByUserType(usertype);
+    }
+
     @Override
     public User getOne(Long id) {
         return repo.findById(id).get();

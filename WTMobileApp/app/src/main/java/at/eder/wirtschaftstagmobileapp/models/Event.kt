@@ -7,7 +7,7 @@ data class Event (
     var id: Long?,
     var label: String?,
     var date: String?,
-    var admin: User?
+    var organiser: User?
 ) {
     override fun toString(): String = "$id - $label: $date"
 }

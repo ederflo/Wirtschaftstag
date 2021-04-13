@@ -7,7 +7,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-public class UserController {
+class UserController {
     fun getAll(callback: (users: List<User>?) -> Unit, errCallback: (call: Call<List<User>>, t: Throwable) -> Unit) {
         var call = APIClient.userClient.getAll()
         call.enqueue(object : Callback<List<User>> {

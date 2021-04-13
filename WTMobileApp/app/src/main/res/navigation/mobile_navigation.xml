@@ -9,7 +9,20 @@
         android:id="@+id/nav_event"
         android:name="at.eder.wirtschaftstagmobileapp.ui.event.EventFragment"
         android:label="@string/menu_event"
-        tools:layout="@layout/fragment_event" />
+        tools:layout="@layout/fragment_event" >
+        <action
+            android:id="@+id/action_nav_event_to_nav_event_create"
+            app:destination="@id/nav_event_create" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_event_create"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.event.EventCreateFragment"
+        android:label="Firmentag erstellen"
+        tools:layout="@layout/fragment_event_create" >
+        <action
+            android:id="@+id/action_nav_event_create_to_nav_event"
+            app:destination="@id/nav_event" />
+    </fragment>
     <fragment
         android:id="@+id/nav_login"
         android:name="at.eder.wirtschaftstagmobileapp.ui.loginFragment.LoginFragment"

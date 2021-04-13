@@ -32,7 +32,7 @@ class LoginFragment : Fragment() {
         }
     }
 
-    fun connectToAPI(view: View) {
+    private fun connectToAPI(view: View) {
         APIClient.protocol = view.findViewById<EditText>(R.id.txbAPIProtocol).text.toString()
         APIClient.ip = view.findViewById<EditText>(R.id.txbAPIIP).text.toString()
         APIClient.port = view.findViewById<EditText>(R.id.txbAPIPort).text.toString()

@@ -80,6 +80,14 @@
                 android:inputType="textPersonName"
                 android:text="@string/menu_department" />
 
+            <Button
+                android:id="@+id/btnSaveDepartment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:onClick="saveDepartment"
+                android:text="Speichern"
+                android:textAlignment="center" />
         </LinearLayout>
     </ScrollView>
 

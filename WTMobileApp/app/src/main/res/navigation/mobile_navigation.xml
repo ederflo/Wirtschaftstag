@@ -40,7 +40,11 @@
         android:id="@+id/nav_department"
         android:name="at.eder.wirtschaftstagmobileapp.ui.department.DepartmentFragment"
         android:label="@string/menu_department"
-        tools:layout="@layout/fragment_department" />
+        tools:layout="@layout/fragment_department" >
+        <action
+            android:id="@+id/action_nav_department_to_nav_department_create"
+            app:destination="@id/nav_department_create" />
+    </fragment>
     <fragment
         android:id="@+id/nav_user"
         android:name="at.eder.wirtschaftstagmobileapp.ui.user.UserFragment"
@@ -56,4 +60,12 @@
         android:name="at.eder.wirtschaftstagmobileapp.ui.participation.ParticipationFragment"
         android:label="@string/menu_participation"
         tools:layout="@layout/fragment_participation" />
+    <fragment
+        android:id="@+id/nav_department_create"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.department.DepartmentCreateFragment"
+        android:label="Abteilung erstellen" >
+        <action
+            android:id="@+id/action_nav_department_create_to_nav_department"
+            app:destination="@id/nav_department" />
+    </fragment>
 </navigation>

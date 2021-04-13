@@ -6,9 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.DepartmentController
 import at.eder.wirtschaftstagmobileapp.models.Department
+import at.eder.wirtschaftstagmobileapp.ui.department.DepartmentFragment.OnSpinnerDepartmentsSelected.toggleScrollViewDepartment
+import at.eder.wirtschaftstagmobileapp.ui.department.DepartmentFragment.OnSpinnerDepartmentsSelected.toggleTxtViewNoDepartmentSelected
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,95 +29,108 @@ class DepartmentFragment : Fragment() {
     override fun onViewCreated(mainV: View, savedInstanceState: Bundle?) {
         super.onViewCreated(mainV, savedInstanceState)
 
-        val fabCreateDepartment: FloatingActionButton = mainV.findViewById(R.id.fab_createDepartment)
-        fabCreateDepartment.setOnClickListener { _ -> createDepartment(mainV) }
-        val fabRefreshDepartments: FloatingActionButton = mainV.findViewById(R.id.fab_refreshDepartments)
-        fabRefreshDepartments.setOnClickListener { _ -> refreshDepartments(mainV) }
-
-        val spinnerDepartments = mainV.findViewById<Spinner>(R.id.spinnerDepartments)
-        val txtViewNoDepartmentSelected = mainV?.findViewById<TextView>(R.id.txtViewNoDepartmentSelected)
-        if (txtViewNoDepartmentSelected != null) {
-            txtViewNoDepartmentSelected.visibility = View.VISIBLE
+        mainV?.findViewById<FloatingActionButton>(R.id.fab_createDepartment)?.setOnClickListener { _ -> createDepartment(mainV) }
+        mainV?.findViewById<FloatingActionButton>(R.id.fab_refreshDepartments)?.setOnClickListener { _ -> refreshDepartments(mainV) }
+        mainV?.findViewById<Button>(R.id.btnSaveDepartment)?.setOnClickListener {
+            saveDepartment(mainV);
         }
-        spinnerDepartments.onItemSelectedListener = OnSpinnerDepartmentSelected
+
+        toggleScrollViewDepartment(mainV, View.INVISIBLE)
+        toggleTxtViewNoDepartmentSelected(mainV, View.VISIBLE)
+
+        mainV.findViewById<Spinner>(R.id.spinnerDepartments)?.onItemSelectedListener = OnSpinnerDepartmentsSelected
         refreshDepartments(mainV)
     }
 
-    private fun refreshDepartments(view: View) {
-        val spinnerDepartments = view.findViewById<Spinner>(R.id.spinnerDepartments)
+    private fun refreshDepartments(view: View?) {
+        val spinnerDepartments = view?.findViewById<Spinner>(R.id.spinnerDepartments)
         if (spinnerDepartments != null) {
             GlobalScope.launch {
                 DepartmentController().getAll(
-                    { departments ->
-                        try {
-                            if (departments != null) {
-                                val adapter = activity?.let {
-                                    ArrayAdapter<Department>(
-                                        it,
-                                        android.R.layout.simple_spinner_item,
-                                        departments
-                                    )
+                        { departments ->
+                            try {
+                                if (departments != null) {
+                                    val adapter = activity?.let {
+                                        ArrayAdapter<Department>(
+                                                it,
+                                                android.R.layout.simple_spinner_item,
+                                                departments
+                                        )
+                                    }
+                                    spinnerDepartments.adapter = adapter
+                                } else {
+                                    val adapter = activity?.let {
+                                        ArrayAdapter<String>(
+                                                it,
+                                                android.R.layout.simple_spinner_item,
+                                                listOf("no departments available")
+                                        )
+                                    }
+                                    spinnerDepartments.adapter = adapter
                                 }
-                                spinnerDepartments.adapter = adapter
-                            } else {
-                                val adapter = activity?.let {
-                                    ArrayAdapter<String>(
-                                        it,
-                                        android.R.layout.simple_spinner_item,
-                                        listOf("no departments available")
-                                    )
-                                }
-                                spinnerDepartments.adapter = adapter
+                            } catch (ex: Throwable) {
+                                errorMessage(view, ex)
                             }
-                        } catch (ex: Throwable) {
-                            errorMessage(view, ex)
-                        }
-                    },
-                    { _, t ->
-                        errorMessage(view, t)
-                    })
+                        },
+                        { _, t ->
+                            errorMessage(view, t)
+                        })
             }
         }
     }
 
-    object OnSpinnerDepartmentSelected : AdapterView.OnItemSelectedListener {
+    object OnSpinnerDepartmentsSelected : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(
-            parentView: AdapterView<*>?,
-            selectedItemView: View,
-            position: Int,
-            id: Long
+                parentView: AdapterView<*>?,
+                selectedItemView: View,
+                position: Int,
+                id: Long
         ) {
-            val txtViewNoDepartmentSelected = (parentView?.parent as View)?.findViewById<TextView>(R.id.txtViewNoDepartmentSelected)
-            val scrollView = (parentView?.parent as View)?.findViewById<TextView>(R.id.scrollViewDepartmentEdit);
-            if (txtViewNoDepartmentSelected != null)
-                txtViewNoDepartmentSelected.visibility = View.INVISIBLE
-            if (scrollView != null) {
-                scrollView.visibility = View.VISIBLE
-                fillDepartmentEditFields(parentView?.parent as View, parentView.getItemAtPosition(position) as Department)
-            }
+            toggleScrollViewDepartment((parentView?.parent as View), View.VISIBLE)
+            toggleTxtViewNoDepartmentSelected((parentView?.parent as View), View.INVISIBLE)
+            fillDepartmentEditFields(parentView?.parent as View, parentView?.getItemAtPosition(position) as Department)
+        }
+
+        override fun onNothingSelected(parentView: AdapterView<*>?) {
+            toggleScrollViewDepartment((parentView?.parent as View), View.INVISIBLE)
+            toggleTxtViewNoDepartmentSelected((parentView?.parent as View), View.VISIBLE)
         }
 
         private fun fillDepartmentEditFields(view: View, department: Department) {
             val scrollView = view.findViewById<ScrollView>(R.id.scrollViewDepartmentEdit)
-            scrollView.findViewById<EditText>(R.id.plainTextEditDepartmentId).setText(department.id.toString())
-            scrollView.findViewById<EditText>(R.id.plainTextEditDepartmentLabel).setText(department.label)
+            scrollView?.findViewById<EditText>(R.id.plainTextEditDepartmentId)?.setText(department.id.toString())
+            scrollView?.findViewById<EditText>(R.id.plainTextEditDepartmentLabel)?.setText(department.label)
         }
 
-        override fun onNothingSelected(parentView: AdapterView<*>?) {
-            val txtViewNoDepartmentSelected = (parentView?.parent as View)?.findViewById<TextView>(R.id.txtViewNoDepartmentSelected)
-            val scrollView = (parentView?.parent as View)?.findViewById<TextView>(R.id.scrollViewDepartmentEdit);
-            if (txtViewNoDepartmentSelected != null)
-                txtViewNoDepartmentSelected.visibility = View.VISIBLE
-            if (scrollView != null)
-                scrollView.visibility = View.INVISIBLE
+        fun toggleTxtViewNoDepartmentSelected(view: View?, visible: Int) {
+            view?.findViewById<TextView>(R.id.txtViewNoDepartmentSelected)?.visibility = visible
+        }
+
+        fun toggleScrollViewDepartment(view: View?, visible: Int) {
+            view?.findViewById<ScrollView>(R.id.scrollViewDepartmentEdit)?.visibility = visible
+        }
+    }
+
+    private fun saveDepartment(view: View?) {
+        var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewDepartmentEdit)
+        var id = scrollView?.findViewById<EditText>(R.id.plainTextEditDepartmentId)?.text.toString().toLong()
+        var label = scrollView?.findViewById<EditText>(R.id.plainTextEditDepartmentLabel)?.text.toString()
+        GlobalScope.launch {
+            DepartmentController().save(Department(id.toLong(), label),
+                    {
+                        refreshDepartments(view)
+                    },
+                    { _, t ->
+                        errorMessage(view, t)
+                    })
         }
     }
 
     private fun createDepartment(view: View) {
-
+        findNavController().navigate(R.id.action_nav_department_to_nav_department_create)
     }
 
-    private fun errorMessage(view: View, t: Throwable) {
+    private fun errorMessage(view: View?, t: Throwable) {
         println(t.message)
     }
 }

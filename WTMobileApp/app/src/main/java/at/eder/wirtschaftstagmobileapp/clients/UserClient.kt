@@ -17,5 +17,5 @@ interface UserClient {
 
     @Headers("content-type: application/json")
     @PUT(path)
-    fun save(@Body user: User): Call<User>
+    fun save(@Body user: User, @Query("userType") userType: String?): Call<User>
 }

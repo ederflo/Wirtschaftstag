@@ -46,7 +46,7 @@ public class UserController {
     }
 
     fun save(user: User, callback: (users: User?) -> Unit, errCallback: (call: Call<User?>, t: Throwable) -> Unit) {
-        var call = APIClient.userClient.save(user)
+        var call = APIClient.userClient.save(user, user.userType.toString())
         call.enqueue(object : Callback<User?> {
             override fun onResponse(call: Call<User?>, response: Response<User?>) {
                 try {

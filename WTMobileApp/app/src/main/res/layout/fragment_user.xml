@@ -61,13 +61,32 @@
                 android:text="Id" />
 
             <TextView
+                android:id="@+id/txtViewEditUserType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="25dp"
+                android:text="Benutzertyp:" />
+
+            <TextView
+                android:id="@+id/txtViewEditUserTypeDisplay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="25dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="10dp"
+                android:text="Benutzertyp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/txtViewEditUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="25dp"
-                android:text="Firmenname:" />
+                android:text="Benutzername:" />
 
             <EditText
                 android:id="@+id/plainTextEditUserName"
@@ -78,7 +97,7 @@
                 android:layout_marginEnd="25dp"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="Firmenname" />
+                android:text="Benutzername" />
 
             <TextView
                 android:id="@+id/txtViewEditUserEmail"
@@ -107,7 +126,7 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="25dp"
-                android:text="Verantwortlicher:" />
+                android:text="Passwort:" />
 
             <EditText
                 android:id="@+id/plainTextEditUserPwdToken"
@@ -118,27 +137,16 @@
                 android:layout_marginEnd="25dp"
                 android:ems="10"
                 android:inputType="textPassword"
-                android:text="Verantwortlicher" />
+                android:text="Passwort" />
 
-            <TextView
-                android:id="@+id/txtViewEditUserComments"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/btnSaveUser"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="25dp"
-                android:text="Notizen:" />
-
-            <EditText
-                android:id="@+id/plainTextEditUserComments"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="25dp"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Notizen" />
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:onClick="saveUser"
+                android:text="Speichern"
+                android:textAlignment="center" />
         </LinearLayout>
     </ScrollView>
     

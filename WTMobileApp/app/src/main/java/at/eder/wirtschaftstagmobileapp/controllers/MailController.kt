@@ -6,7 +6,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-public class MailController {
+class MailController {
     fun getAll(callback: (mails: List<Mail>?) -> Unit, errCallback: (call: Call<List<Mail>>, t: Throwable) -> Unit) {
         var call = APIClient.mailClient.getAll()
         call.enqueue(object : Callback<List<Mail>> {

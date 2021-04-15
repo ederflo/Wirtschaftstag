@@ -36,7 +36,6 @@ class ParticipationFragment : Fragment() {
     override fun onViewCreated(mainV: View, savedInstanceState: Bundle?) {
         super.onViewCreated(mainV, savedInstanceState)
 
-        mainV?.findViewById<FloatingActionButton>(R.id.fab_createParticipation)?.setOnClickListener { _ -> createParticipation(mainV) }
         mainV?.findViewById<FloatingActionButton>(R.id.fab_refreshParticipations)?.setOnClickListener { _ -> refreshParticipations(mainV) }
         mainV?.findViewById<Button>(R.id.btnSaveParticipationSelection)?.setOnClickListener {
             saveParticipationSelection(mainV);

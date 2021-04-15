@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         try {
             repo.deleteById(id);
         } catch(Exception ex) {
-
+            return false;
         }
         return true;
     }

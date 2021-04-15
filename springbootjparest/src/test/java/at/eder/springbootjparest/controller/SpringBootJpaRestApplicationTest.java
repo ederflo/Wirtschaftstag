@@ -44,7 +44,7 @@ public class SpringBootJpaRestApplicationTest {
         System.out.println("DEBUG: TEST");
         mockMvc.perform(
                 get("/")
-        ).andExpect(status().isNotFound());
+        ).andExpect(status().isOk());
     }
     
     @Test

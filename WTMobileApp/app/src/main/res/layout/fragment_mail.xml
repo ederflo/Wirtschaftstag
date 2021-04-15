@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <Spinner
-        android:id="@+id/spinnerMails"
+        android:id="@+id/spinnerMailEvents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,20 +22,96 @@
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerMails" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerMailEvents" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_createMail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
+    <ScrollView
+        android:id="@+id/scrollViewMailSelection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:isScrollContainer="true"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_add"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintHorizontal_bias="0.54"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btnSelectAllMailCompanies"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Alle auswählen" />
+
+            <Button
+                android:id="@+id/btnUnSelectAllMailCompanies"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Alle abwählen" />
+
+
+            <ListView
+                android:id="@+id/listViewMailParticipations"
+                android:layout_width="match_parent"
+                android:layout_height="350px"
+                android:nestedScrollingEnabled="true"
+                android:overScrollMode="never">
+
+            </ListView>
+
+            <TextView
+                android:id="@+id/txtViewWriteMailSubject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="25dp"
+                android:text="Betreff:" />
+
+            <EditText
+                android:id="@+id/plainTextWriteMailSubject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="25dp"
+                android:ems="10"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/txtViewWriteMailContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="25dp"
+                android:text="Körper:" />
+
+            <EditText
+                android:id="@+id/plainTextWriteMailContent"
+                android:layout_width="match_parent"
+                android:layout_height="300px"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="25dp"
+                android:ems="10"
+                android:inputType="textMultiLine" />
+
+            <Button
+                android:id="@+id/btnSendMailSelection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:text="E-Mail(s) senden"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_refreshMails"

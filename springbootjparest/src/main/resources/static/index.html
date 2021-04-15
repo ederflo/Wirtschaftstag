@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verfügbare URLs</title>
+
+    <script>
+    
+        let urls =  [
+			{'name':'Events','link':'/api/events'},
+			{'name':'Departments','link':'/api/departments'},
+			{'name':'Companies','link':'/api/companies'},
+			{'name':'Participations','link':'/api/participations?eventId=-1'},
+			{'name':'Users','link':'/api/users?userType=all'},
+            {'name':'Admins','link':'/api/users?userType=admin'},
+            {'name':'Pupils','link':'/api/users?userType=pupil'},
+            {'name':'Responsibles','link':'/api/users?userType=responsible'},
+            {'name':'Mails','link':'/api/mails'},
+            {'name':'Timeslots','link':'/api/timeSlots'},
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let list = document.getElementById('urls');
+            urls.forEach((obj) => {
+                let element = document.createElement('a');
+                element.href = obj.link;
+                element.text = obj.name;
+                list.appendChild(element);
+                list.appendChild(document.createElement('br'));
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="urls"></div>
+</body>
+</html>

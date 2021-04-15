@@ -29,7 +29,6 @@ class DepartmentCreateFragment : Fragment() {
         super.onViewCreated(mainV, savedInstanceState)
 
         var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewDepartmentCreate)
-        scrollView?.findViewById<EditText>(R.id.plainTextCreateDepartmentId)?.setText(System.currentTimeMillis().toString())
         mainV?.findViewById<Button>(R.id.btnCreateDepartment)?.setOnClickListener {
             createDepartment(mainV);
         }
@@ -37,10 +36,9 @@ class DepartmentCreateFragment : Fragment() {
 
     private fun createDepartment(view: View?) {
         var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewDepartmentCreate)
-        var id = scrollView?.findViewById<EditText>(R.id.plainTextCreateDepartmentId)?.text.toString().toLong()
         var label = scrollView?.findViewById<EditText>(R.id.plainTextCreateDepartmentLabel)?.text.toString()
         GlobalScope.launch {
-            DepartmentController().save(Department(id, label),
+            DepartmentController().save(Department(System.currentTimeMillis(), label),
                     {
                         findNavController().navigate(R.id.action_nav_department_create_to_nav_department)
                         message("Department '$label' sucessfully created")

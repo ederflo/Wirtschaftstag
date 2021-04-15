@@ -28,7 +28,6 @@ class CompanyCreateFragment : Fragment() {
         super.onViewCreated(mainV, savedInstanceState)
 
         var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewCompanyCreate)
-        scrollView?.findViewById<EditText>(R.id.plainTextCreateCompanyId)?.setText(System.currentTimeMillis().toString())
         mainV?.findViewById<Button>(R.id.btnCreateCompany)?.setOnClickListener {
             createCompany(mainV);
         }
@@ -36,7 +35,6 @@ class CompanyCreateFragment : Fragment() {
 
     private fun createCompany(view: View?) {
         var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewCompanyCreate)
-        var id = scrollView?.findViewById<EditText>(R.id.plainTextCreateCompanyId)?.text.toString().toLong()
         var name = scrollView?.findViewById<EditText>(R.id.plainTextCreateCompanyName)?.text.toString()
         var zipTown = scrollView?.findViewById<EditText>(R.id.plainTextCreateCompanyZipTown)?.text.toString()
         var street = scrollView?.findViewById<EditText>(R.id.plainTextCreateCompanyStreet)?.text.toString()
@@ -45,7 +43,7 @@ class CompanyCreateFragment : Fragment() {
         var replyTo = scrollView?.findViewById<EditText>(R.id.plainTextCreateCompanyReplyTo)?.text.toString()
         var comments = scrollView?.findViewById<EditText>(R.id.plainTextCreateCompanyComments)?.text.toString()
         GlobalScope.launch {
-            CompanyController().save(Company(id, name, zipTown, street, phone, email, replyTo, comments),
+            CompanyController().save(Company(System.currentTimeMillis(), name, zipTown, street, phone, email, replyTo, comments),
                     {
                         findNavController().navigate(R.id.action_nav_company_create_to_nav_company)
                         message("Company '$name' successfully created")

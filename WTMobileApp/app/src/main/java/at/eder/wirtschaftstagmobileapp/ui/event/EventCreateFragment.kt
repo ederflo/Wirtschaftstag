@@ -30,7 +30,6 @@ class EventCreateFragment : Fragment() {
         super.onViewCreated(mainV, savedInstanceState)
 
         var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewEventCreate)
-        scrollView?.findViewById<EditText>(R.id.plainTextCreateEventId)?.setText(System.currentTimeMillis().toString())
         mainV?.findViewById<Button>(R.id.btnCreateEvent)?.setOnClickListener {
             createEvent(mainV);
         }
@@ -71,12 +70,11 @@ class EventCreateFragment : Fragment() {
 
     private fun createEvent(view: View?) {
         var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewEventCreate)
-        var id = scrollView?.findViewById<EditText>(R.id.plainTextCreateEventId)?.text.toString().toLong()
         var label = scrollView?.findViewById<EditText>(R.id.plainTextCreateEventLabel)?.text.toString()
         var date = scrollView?.findViewById<EditText>(R.id.plainTextCreateEventDate)?.text.toString()
         var organiser = scrollView?.findViewById<Spinner>(R.id.spinnerCreateEventOrganiser)?.selectedItem as User
         GlobalScope.launch {
-            EventController().save(Event(id, label, date, organiser),
+            EventController().save(Event(System.currentTimeMillis(), label, date, organiser),
                     {
                         findNavController().navigate(R.id.action_nav_event_create_to_nav_event)
                         message("Event '$label' sucessfully created")

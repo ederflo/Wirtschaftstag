@@ -33,9 +33,8 @@ class UserFragment : Fragment() {
 
         mainV?.findViewById<FloatingActionButton>(R.id.fab_createUser)?.setOnClickListener { _ -> createUser(mainV) }
         mainV?.findViewById<FloatingActionButton>(R.id.fab_refreshUsers)?.setOnClickListener { _ -> refreshUsers(mainV) }
-        mainV?.findViewById<Button>(R.id.btnSaveUser)?.setOnClickListener {
-            saveUser(mainV);
-        }
+        mainV?.findViewById<Button>(R.id.btnSaveUser)?.setOnClickListener { saveUser(mainV); }
+        mainV?.findViewById<Button>(R.id.btnDeleteUser)?.setOnClickListener { deleteUser(mainV); }
 
         toggleScrollViewUser(mainV, View.INVISIBLE)
         toggleTxtViewNoUserSelected(mainV, View.VISIBLE)
@@ -133,6 +132,27 @@ class UserFragment : Fragment() {
                     { _, t ->
                         errorMessage(t)
                     })
+        }
+    }
+
+    private fun deleteUser(view: View?) {
+        var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewUserEdit)
+        var id = scrollView?.findViewById<EditText>(R.id.plainTextEditUserId)?.text.toString().toLong()
+        var name = scrollView?.findViewById<EditText>(R.id.plainTextEditUserName)?.text.toString()
+        GlobalScope.launch {
+            UserController().delete(id.toLong(),
+                { result ->
+                    if (result == true) {
+                        refreshUsers(view)
+                        message("User '$name' successfully deleted")
+                    } else {
+                        message("User '$name' could not be deleted! Ensure user has no foreign keys left")
+                    }
+
+                },
+                { _, t ->
+                    errorMessage(t)
+                })
         }
     }
 

@@ -21,4 +21,7 @@ interface UserClient {
     @Headers("content-type: application/json")
     @PUT(path)
     fun save(@Body user: User, @Query("userType") userType: String?): Call<User>
+
+    @DELETE("${path}/{id}")
+    fun delete(@Path("id") id: Long?): Call<Boolean>
 }

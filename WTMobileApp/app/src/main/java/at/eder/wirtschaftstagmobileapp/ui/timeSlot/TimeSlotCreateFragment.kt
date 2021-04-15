@@ -29,7 +29,6 @@ class TimeSlotCreateFragment : Fragment() {
         super.onViewCreated(mainV, savedInstanceState)
 
         var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewTimeSlotCreate)
-        scrollView?.findViewById<EditText>(R.id.plainTextCreateTimeSlotId)?.setText(System.currentTimeMillis().toString())
         mainV?.findViewById<Button>(R.id.btnCreateTimeSlot)?.setOnClickListener {
             createTimeSlot(mainV);
         }
@@ -37,12 +36,11 @@ class TimeSlotCreateFragment : Fragment() {
 
     private fun createTimeSlot(view: View?) {
         var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewTimeSlotCreate)
-        var id = scrollView?.findViewById<EditText>(R.id.plainTextCreateTimeSlotId)?.text.toString().toLong()
         var starts = scrollView?.findViewById<EditText>(R.id.plainTextCreateTimeSlotStarts)?.text.toString()
         var ends = scrollView?.findViewById<EditText>(R.id.plainTextCreateTimeSlotEnds)?.text.toString()
         var max = scrollView?.findViewById<EditText>(R.id.plainTextCreateTimeSlotMax)?.text.toString().toInt()
         GlobalScope.launch {
-            TimeSlotController().save(TimeSlot(id, starts, ends, max),
+            TimeSlotController().save(TimeSlot(System.currentTimeMillis(), starts, ends, max),
                     {
                         findNavController().navigate(R.id.action_nav_timeslot_create_to_nav_timeslot)
                         message("Timeslot $starts - $ends sucessfully created")

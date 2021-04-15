@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.MailController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.Mail
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.GlobalScope
@@ -41,6 +42,7 @@ class MailFragment : Fragment() {
         }
         spinnerMails.onItemSelectedListener = OnSpinnerMailSelected
         refreshMails(mainV)
+        message("Mails sucessfully reloaded")
     }
 
     private fun refreshMails(view: View) {
@@ -70,11 +72,11 @@ class MailFragment : Fragment() {
                                 spinnerMails.adapter = adapter
                             }
                         } catch (ex: Throwable) {
-                            errorMessage(view, ex)
+                            errorMessage(ex)
                         }
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage(t)
                     })
             }
         }
@@ -105,7 +107,11 @@ class MailFragment : Fragment() {
 
     }
 
-    private fun errorMessage(view: View, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ScrollView
-import android.widget.Spinner
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.CompanyController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.Company
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.GlobalScope
@@ -50,14 +48,19 @@ class CompanyCreateFragment : Fragment() {
             CompanyController().save(Company(id, name, zipTown, street, phone, email, replyTo, comments),
                     {
                         findNavController().navigate(R.id.action_nav_company_create_to_nav_company)
+                        message("Company '$name' successfully created")
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage(t)
                     })
         }
     }
 
-    private fun errorMessage(view: View?, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

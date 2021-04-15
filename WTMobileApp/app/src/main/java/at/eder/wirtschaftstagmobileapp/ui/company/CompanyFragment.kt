@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.CompanyController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.Company
 import at.eder.wirtschaftstagmobileapp.ui.company.CompanyFragment.OnSpinnerCompaniesSelected.toggleScrollViewCompany
 import at.eder.wirtschaftstagmobileapp.ui.company.CompanyFragment.OnSpinnerCompaniesSelected.toggleTxtViewNoCompanySelected
@@ -40,6 +41,7 @@ class CompanyFragment : Fragment() {
 
         mainV.findViewById<Spinner>(R.id.spinnerCompanies)?.onItemSelectedListener = OnSpinnerCompaniesSelected
         refreshCompanies(mainV)
+        message("Companies successfully loaded")
     }
 
     private fun refreshCompanies(view: View?) {
@@ -69,11 +71,11 @@ class CompanyFragment : Fragment() {
                                 spinnerCompanies.adapter = adapter
                             }
                         } catch (ex: Throwable) {
-                            errorMessage(view, ex)
+                            errorMessage(ex)
                         }
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage(t)
                     })
             }
         }
@@ -130,10 +132,11 @@ class CompanyFragment : Fragment() {
         GlobalScope.launch {
             CompanyController().save(Company(id.toLong(), name, zipTown, street, phone, email, replyTo, comments),
                 {
+                    message("Company '$name' successfully saved")
                     refreshCompanies(view)
                 },
                 { _, t ->
-                    errorMessage(view, t)
+                    errorMessage( t)
                 })
         }
     }
@@ -142,7 +145,11 @@ class CompanyFragment : Fragment() {
         findNavController().navigate(R.id.action_nav_company_to_nav_company_create)
     }
 
-    private fun errorMessage(view: View?, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

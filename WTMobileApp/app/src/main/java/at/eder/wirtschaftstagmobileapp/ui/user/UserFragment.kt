@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.UserController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.User
 import at.eder.wirtschaftstagmobileapp.models.UserTypes
 import at.eder.wirtschaftstagmobileapp.ui.user.UserFragment.OnSpinnerUsersSelected.toggleScrollViewUser
@@ -41,6 +42,7 @@ class UserFragment : Fragment() {
 
         mainV.findViewById<Spinner>(R.id.spinnerUsers)?.onItemSelectedListener = OnSpinnerUsersSelected
         refreshUsers(mainV)
+        message("Users successfully loaded")
     }
 
     private fun refreshUsers(view: View?) {
@@ -70,11 +72,11 @@ class UserFragment : Fragment() {
                                     spinnerUsers.adapter = adapter
                                 }
                             } catch (ex: Throwable) {
-                                errorMessage(view, ex)
+                                errorMessage(ex)
                             }
                         },
                         { _, t ->
-                            errorMessage(view, t)
+                            errorMessage(t)
                         })
             }
         }
@@ -126,9 +128,10 @@ class UserFragment : Fragment() {
             UserController().save(User(id.toLong(), UserTypes.valueOf(userType), name, email, pwdToken),
                     {
                         refreshUsers(view)
+                        message("User '$name' successfully created")
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage(t)
                     })
         }
     }
@@ -137,7 +140,11 @@ class UserFragment : Fragment() {
         findNavController().navigate(R.id.action_nav_user_to_nav_user_create)
     }
 
-    private fun errorMessage(view: View?, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

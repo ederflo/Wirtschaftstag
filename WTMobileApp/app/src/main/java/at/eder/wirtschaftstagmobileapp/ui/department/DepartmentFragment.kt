@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.DepartmentController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.Department
 import at.eder.wirtschaftstagmobileapp.ui.department.DepartmentFragment.OnSpinnerDepartmentsSelected.toggleScrollViewDepartment
 import at.eder.wirtschaftstagmobileapp.ui.department.DepartmentFragment.OnSpinnerDepartmentsSelected.toggleTxtViewNoDepartmentSelected
@@ -40,6 +41,7 @@ class DepartmentFragment : Fragment() {
 
         mainV.findViewById<Spinner>(R.id.spinnerDepartments)?.onItemSelectedListener = OnSpinnerDepartmentsSelected
         refreshDepartments(mainV)
+        message("Departments sucessfully reloaded")
     }
 
     private fun refreshDepartments(view: View?) {
@@ -69,11 +71,11 @@ class DepartmentFragment : Fragment() {
                                     spinnerDepartments.adapter = adapter
                                 }
                             } catch (ex: Throwable) {
-                                errorMessage(view, ex)
+                                errorMessage(ex)
                             }
                         },
                         { _, t ->
-                            errorMessage(view, t)
+                            errorMessage( t)
                         })
             }
         }
@@ -118,10 +120,11 @@ class DepartmentFragment : Fragment() {
         GlobalScope.launch {
             DepartmentController().save(Department(id.toLong(), label),
                     {
+                        message("Department '$label' sucessfully saved")
                         refreshDepartments(view)
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage( t)
                     })
         }
     }
@@ -130,7 +133,11 @@ class DepartmentFragment : Fragment() {
         findNavController().navigate(R.id.action_nav_department_to_nav_department_create)
     }
 
-    private fun errorMessage(view: View?, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

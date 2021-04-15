@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.EventController
 import at.eder.wirtschaftstagmobileapp.controllers.UserController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.Event
 import at.eder.wirtschaftstagmobileapp.models.User
 import at.eder.wirtschaftstagmobileapp.models.UserTypes
@@ -59,11 +60,11 @@ class EventCreateFragment : Fragment() {
                                 mainV?.findViewById<Spinner>(R.id.spinnerCreateEventOrganiser)?.adapter = adapter
                             }
                         } catch (ex: Throwable) {
-                            errorMessage(view, ex)
+                            errorMessage(ex)
                         }
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage(t)
                     })
         }
     }
@@ -78,14 +79,19 @@ class EventCreateFragment : Fragment() {
             EventController().save(Event(id, label, date, organiser),
                     {
                         findNavController().navigate(R.id.action_nav_event_create_to_nav_event)
+                        message("Event '$label' sucessfully created")
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage(t)
                     })
         }
     }
 
-    private fun errorMessage(view: View?, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.DepartmentController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.Department
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -42,14 +43,19 @@ class DepartmentCreateFragment : Fragment() {
             DepartmentController().save(Department(id, label),
                     {
                         findNavController().navigate(R.id.action_nav_department_create_to_nav_department)
+                        message("Department '$label' sucessfully created")
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage(t)
                     })
         }
     }
 
-    private fun errorMessage(view: View?, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

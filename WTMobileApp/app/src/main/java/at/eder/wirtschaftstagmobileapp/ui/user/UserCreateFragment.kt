@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.UserController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.User
 import at.eder.wirtschaftstagmobileapp.models.UserTypes
 import kotlinx.coroutines.GlobalScope
@@ -54,14 +55,19 @@ class UserCreateFragment : Fragment() {
             UserController().save(User(id, UserTypes.valueOf(userType), name, email, pwdToken),
                     {
                         findNavController().navigate(R.id.action_nav_user_create_to_nav_user)
+                        message("User '$name' successfully created")
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage(t)
                     })
         }
     }
 
-    private fun errorMessage(view: View?, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

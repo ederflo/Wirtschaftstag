@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.EventController
 import at.eder.wirtschaftstagmobileapp.controllers.UserController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.Event
 import at.eder.wirtschaftstagmobileapp.models.User
 import at.eder.wirtschaftstagmobileapp.models.UserTypes
@@ -69,12 +70,13 @@ class EventFragment : Fragment() {
                                     }
                                     spinnerEventOrganisers.adapter = adapter
                                 }
+                                message("Departments sucessfully reloaded")
                             } catch (ex: Throwable) {
-                                errorMessage(view, ex)
+                                errorMessage(ex)
                             }
                         },
                         { _, t ->
-                            errorMessage(view, t)
+                            errorMessage(t)
                         })
             }.invoke()
         }
@@ -107,11 +109,11 @@ class EventFragment : Fragment() {
                                     spinnerEvents.adapter = adapter
                                 }
                             } catch (ex: Throwable) {
-                                errorMessage(view, ex)
+                                errorMessage(ex)
                             }
                         },
                         { _, t ->
-                            errorMessage(view, t)
+                            errorMessage(t)
                         })
             }
         }
@@ -172,9 +174,10 @@ class EventFragment : Fragment() {
             EventController().save(Event(id.toLong(), label, date, organiser),
                     {
                         refreshEvents(view)
+                        message("Event '$label' sucessfully saved")
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage(t)
                     })
         }
     }
@@ -183,7 +186,11 @@ class EventFragment : Fragment() {
         findNavController().navigate(R.id.action_nav_event_to_nav_event_create)
     }
 
-    private fun errorMessage(view: View?, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
 import at.eder.wirtschaftstagmobileapp.controllers.TimeSlotController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.TimeSlot
 import at.eder.wirtschaftstagmobileapp.ui.timeSlot.TimeSlotFragment.OnSpinnerTimeSlotsSelected.toggleScrollViewTimeSlot
 import at.eder.wirtschaftstagmobileapp.ui.timeSlot.TimeSlotFragment.OnSpinnerTimeSlotsSelected.toggleTxtViewNoTimeSlotSelected
@@ -40,6 +41,7 @@ class TimeSlotFragment : Fragment() {
 
         mainV.findViewById<Spinner>(R.id.spinnerTimeSlots)?.onItemSelectedListener = OnSpinnerTimeSlotsSelected
         refreshTimeSlots(mainV)
+        message("Timeslots successfully loaded")
     }
 
     private fun refreshTimeSlots(view: View?) {
@@ -69,11 +71,11 @@ class TimeSlotFragment : Fragment() {
                                     spinnerTimeSlots.adapter = adapter
                                 }
                             } catch (ex: Throwable) {
-                                errorMessage(view, ex)
+                                errorMessage(ex)
                             }
                         },
                         { _, t ->
-                            errorMessage(view, t)
+                            errorMessage(t)
                         })
             }
         }
@@ -123,9 +125,10 @@ class TimeSlotFragment : Fragment() {
             TimeSlotController().save(TimeSlot(id.toLong(), starts, ends, max),
                     {
                         refreshTimeSlots(view)
+                        message("Timeslot $starts - $ends successfully saved")
                     },
                     { _, t ->
-                        errorMessage(view, t)
+                        errorMessage(t)
                     })
         }
     }
@@ -134,7 +137,11 @@ class TimeSlotFragment : Fragment() {
         findNavController().navigate(R.id.action_nav_timeslot_to_nav_timeslot_create)
     }
 
-    private fun errorMessage(view: View?, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

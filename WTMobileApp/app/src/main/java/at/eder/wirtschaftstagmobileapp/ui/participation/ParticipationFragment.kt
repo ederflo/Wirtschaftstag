@@ -14,6 +14,7 @@ import at.eder.wirtschaftstagmobileapp.controllers.CompanyController
 import at.eder.wirtschaftstagmobileapp.controllers.EventController
 import at.eder.wirtschaftstagmobileapp.controllers.ParticipationController
 import at.eder.wirtschaftstagmobileapp.controllers.UserController
+import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.*
 import at.eder.wirtschaftstagmobileapp.ui.participation.ParticipationFragment.OnSpinnerParticipationEventsSelected.toggleScrollViewParticipation
 import at.eder.wirtschaftstagmobileapp.ui.participation.ParticipationFragment.OnSpinnerParticipationEventsSelected.toggleTxtViewNoParticipationSelected
@@ -79,11 +80,11 @@ class ParticipationFragment : Fragment() {
                                         listViewParticipationCompanies.adapter = adapter
                                     }
                                 } catch (ex: Throwable) {
-                                    errorMessage(view, ex)
+                                    errorMessage(ex)
                                 }
                             },
                             { _, t ->
-                                errorMessage(view, t)
+                                errorMessage(t)
                             })
                 }.invoke()
             }
@@ -101,6 +102,7 @@ class ParticipationFragment : Fragment() {
         }
 
         refreshParticipations(mainV)
+        message("Participations successfully loaded")
     }
 
     private fun refreshParticipations(view: View?) {
@@ -130,11 +132,11 @@ class ParticipationFragment : Fragment() {
                                     spinnerParticipationEvents.adapter = adapter
                                 }
                             } catch (ex: Throwable) {
-                                errorMessage(view, ex)
+                                errorMessage(ex)
                             }
                         },
                         { _, t ->
-                            errorMessage(view, t)
+                            errorMessage(t)
                         })
             }
         }
@@ -149,7 +151,7 @@ class ParticipationFragment : Fragment() {
         ) {
             toggleScrollViewParticipation((parentView?.parent as View), View.VISIBLE)
             toggleTxtViewNoParticipationSelected((parentView?.parent as View), View.INVISIBLE)
-            fillParticipationEditFields(parentView?.parent as View, parentView?.getItemAtPosition(position) as Event)
+            fillParticipationCompanySelection(parentView?.parent as View, parentView?.getItemAtPosition(position) as Event)
         }
 
         override fun onNothingSelected(parentView: AdapterView<*>?) {
@@ -157,7 +159,7 @@ class ParticipationFragment : Fragment() {
             toggleTxtViewNoParticipationSelected((parentView?.parent as View), View.VISIBLE)
         }
 
-        private fun fillParticipationEditFields(view: View, event: Event) {
+        private fun fillParticipationCompanySelection(view: View, event: Event) {
             val scrollView = view.findViewById<ScrollView>(R.id.scrollViewParticipationSelection)
             val listViewParticipationCompanies = scrollView?.findViewById<ListView>(R.id.listViewParticipationCompanies)
             if (scrollView != null && listViewParticipationCompanies != null) {
@@ -176,11 +178,11 @@ class ParticipationFragment : Fragment() {
                                         }
                                     }
                                 } catch (ex: Throwable) {
-                                    ParticipationFragment().errorMessage(view, ex)
+                                    ParticipationFragment().errorMessage(ex)
                                 }
                             },
                             { _, t ->
-                                ParticipationFragment().errorMessage(view, t)
+                                ParticipationFragment().errorMessage(t)
                             })
                 }
             }
@@ -223,7 +225,7 @@ class ParticipationFragment : Fragment() {
 
                                                                                 },
                                                                                 { _, t ->
-                                                                                    ParticipationFragment().errorMessage(view, t)
+                                                                                    ParticipationFragment().errorMessage(t)
                                                                                 })
                                                                     }
                                                                 }
@@ -238,26 +240,27 @@ class ParticipationFragment : Fragment() {
 
                                                                             },
                                                                             { _, t ->
-                                                                                ParticipationFragment().errorMessage(view, t)
+                                                                                ParticipationFragment().errorMessage(t)
                                                                             })
                                                                 }
                                                             }
                                                             refreshParticipations(view)
+                                                            message("Successfully saved participations for event '${currentEvent.label}'")
                                                         }
                                                     } catch (ex: Throwable) {
-                                                        errorMessage(view, ex)
+                                                        errorMessage(ex)
                                                     }
                                                 },
                                                 { _, t ->
-                                                    ParticipationFragment().errorMessage(view, t)
+                                                    ParticipationFragment().errorMessage(t)
                                                 })
                                     }
                                 } catch (ex: Throwable) {
-                                    ParticipationFragment().errorMessage(view, ex)
+                                    ParticipationFragment().errorMessage(ex)
                                 }
                             },
                             { _, t ->
-                                ParticipationFragment().errorMessage(view, t)
+                                ParticipationFragment().errorMessage(t)
                             })
                 }
             }
@@ -269,6 +272,7 @@ class ParticipationFragment : Fragment() {
         for (i in 0 until listViewParticipationCompanies?.adapter?.count!!) {
                 listViewParticipationCompanies?.setItemChecked(i, true)
         }
+        message("All companies selected")
     }
 
     private fun unSelectAllParticipationCompanies(view: View?) {
@@ -276,6 +280,7 @@ class ParticipationFragment : Fragment() {
         for (i in 0 until listViewParticipationCompanies?.adapter?.count!!) {
             listViewParticipationCompanies?.setItemChecked(i, false)
         }
+        message("All companies unselected")
     }
 
     private fun getCurrentSelectedEvent(view: View?): Event? {
@@ -286,7 +291,11 @@ class ParticipationFragment : Fragment() {
         findNavController().navigate(R.id.action_nav_participation_to_nav_participation_create)
     }
 
-    private fun errorMessage(view: View?, t: Throwable) {
-        println(t.message)
+    private fun message(msg: CharSequence) {
+        UiHelper().printMessage(activity, msg)
+    }
+
+    private fun errorMessage(t: Throwable) {
+        UiHelper().handleErrorMessage(activity, t)
     }
 }

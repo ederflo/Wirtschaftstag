@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <Spinner
-        android:id="@+id/spinnerParticipations"
+        android:id="@+id/spinnerParticipationEvents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +22,52 @@
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerParticipations" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerParticipationEvents" />
+
+    <ScrollView
+        android:id="@+id/scrollViewParticipationSelection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.54"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btnSelectAllParticipationCompanies"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Alle auswählen" />
+
+            <Button
+                android:id="@+id/btnUnSelectAllParticipationCompanies"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Alle abwählen" />
+
+
+            <ListView
+                android:id="@+id/listViewParticipationCompanies"
+                android:layout_width="match_parent"
+                android:layout_height="500px" />
+
+            <Button
+                android:id="@+id/btnSaveParticipationSelection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:text="Speichern"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_createParticipation"

@@ -1,27 +1,33 @@
 package at.eder.wirtschaftstagmobileapp.ui.participation
 
 import android.os.Bundle
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
+import android.widget.AdapterView.OnItemLongClickListener
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import at.eder.wirtschaftstagmobileapp.R
+import at.eder.wirtschaftstagmobileapp.controllers.CompanyController
+import at.eder.wirtschaftstagmobileapp.controllers.EventController
 import at.eder.wirtschaftstagmobileapp.controllers.ParticipationController
-import at.eder.wirtschaftstagmobileapp.models.Participation
+import at.eder.wirtschaftstagmobileapp.controllers.UserController
+import at.eder.wirtschaftstagmobileapp.models.*
+import at.eder.wirtschaftstagmobileapp.ui.participation.ParticipationFragment.OnSpinnerParticipationEventsSelected.toggleScrollViewParticipation
+import at.eder.wirtschaftstagmobileapp.ui.participation.ParticipationFragment.OnSpinnerParticipationEventsSelected.toggleTxtViewNoParticipationSelected
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+
 class ParticipationFragment : Fragment() {
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_participation, container, false)
     }
@@ -29,83 +35,258 @@ class ParticipationFragment : Fragment() {
     override fun onViewCreated(mainV: View, savedInstanceState: Bundle?) {
         super.onViewCreated(mainV, savedInstanceState)
 
-        val fabCreateParticipation: FloatingActionButton = mainV.findViewById(R.id.fab_createParticipation)
-        fabCreateParticipation.setOnClickListener { _ -> createParticipation(mainV) }
-        val fabRefreshParticipation: FloatingActionButton = mainV.findViewById(R.id.fab_refreshParticipations)
-        fabRefreshParticipation.setOnClickListener { _ -> refreshParticipations(mainV) }
-
-        val spinnerParticipations = mainV.findViewById<Spinner>(R.id.spinnerParticipations)
-        val txtViewNoParticipationSelected = mainV?.findViewById<TextView>(R.id.txtViewNoParticipationSelected)
-        if (txtViewNoParticipationSelected != null) {
-            txtViewNoParticipationSelected.visibility = View.VISIBLE
+        mainV?.findViewById<FloatingActionButton>(R.id.fab_createParticipation)?.setOnClickListener { _ -> createParticipation(mainV) }
+        mainV?.findViewById<FloatingActionButton>(R.id.fab_refreshParticipations)?.setOnClickListener { _ -> refreshParticipations(mainV) }
+        mainV?.findViewById<Button>(R.id.btnSaveParticipationSelection)?.setOnClickListener {
+            saveParticipationSelection(mainV);
         }
-        spinnerParticipations.onItemSelectedListener = OnSpinnerParticipationSelected
-        refreshParticipations(mainV)
-    }
+        mainV?.findViewById<Button>(R.id.btnSelectAllParticipationCompanies)?.setOnClickListener {
+            selectAllParticipationCompanies(mainV);
+        }
+        mainV?.findViewById<Button>(R.id.btnUnSelectAllParticipationCompanies)?.setOnClickListener {
+            unSelectAllParticipationCompanies(mainV);
+        }
 
-    private fun refreshParticipations(view: View) {
-        val spinnerParticipations = view.findViewById<Spinner>(R.id.spinnerParticipations)
-        if (spinnerParticipations != null) {
+        toggleScrollViewParticipation(mainV, View.INVISIBLE)
+        toggleTxtViewNoParticipationSelected(mainV, View.VISIBLE)
+
+        val listViewParticipationCompanies = mainV?.findViewById<ListView>(R.id.listViewParticipationCompanies)
+        listViewParticipationCompanies.choiceMode = ListView.CHOICE_MODE_MULTIPLE;
+
+        if (listViewParticipationCompanies != null)
             GlobalScope.launch {
-                ParticipationController().getAll(
-                    { participations ->
-                        try {
-                            if (participations != null) {
-                                val adapter = activity?.let {
-                                    ArrayAdapter<Participation>(
-                                        it,
-                                        android.R.layout.simple_spinner_item,
-                                        participations
-                                    )
+                suspend {
+                    CompanyController().getAll(
+                            { companies ->
+                                try {
+                                    if (companies != null) {
+                                        val adapter = activity?.let {
+                                            ArrayAdapter<Company>(
+                                                    it,
+                                                    android.R.layout.simple_list_item_multiple_choice,
+                                                    companies
+                                            )
+                                        }
+                                        listViewParticipationCompanies.adapter = adapter
+                                    } else {
+                                        val adapter = activity?.let {
+                                            ArrayAdapter<String>(
+                                                    it,
+                                                    android.R.layout.simple_list_item_multiple_choice,
+                                                    listOf("no companies available")
+                                            )
+                                        }
+                                        listViewParticipationCompanies.adapter = adapter
+                                    }
+                                } catch (ex: Throwable) {
+                                    errorMessage(view, ex)
                                 }
-                                spinnerParticipations.adapter = adapter
-                            } else {
-                                val adapter = activity?.let {
-                                    ArrayAdapter<String>(
-                                        it,
-                                        android.R.layout.simple_spinner_item,
-                                        listOf("no participations available")
-                                    )
-                                }
-                                spinnerParticipations.adapter = adapter
-                            }
-                        } catch (ex: Throwable) {
-                            errorMessage(view, ex)
-                        }
-                    },
-                    { _, t ->
-                        errorMessage(view, t)
-                    })
+                            },
+                            { _, t ->
+                                errorMessage(view, t)
+                            })
+                }.invoke()
             }
-        }
-    }
 
-    object OnSpinnerParticipationSelected : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(
+        mainV.findViewById<Spinner>(R.id.spinnerParticipationEvents)?.onItemSelectedListener = OnSpinnerParticipationEventsSelected
+        listViewParticipationCompanies?.onItemLongClickListener = OnItemLongClickListener {
             parentView: AdapterView<*>?,
             selectedItemView: View,
             position: Int,
-            id: Long
-        ) {
-            val txtViewNoParticipationSelected = (parentView?.parent as View)?.findViewById<TextView>(R.id.txtViewNoParticipationSelected)
-            if (txtViewNoParticipationSelected != null) {
-                txtViewNoParticipationSelected.visibility = View.INVISIBLE
+            id: Long ->
+
+            findNavController().navigate(R.id.action_nav_participation_to_nav_participation_create)
+
+            true
+        }
+
+        refreshParticipations(mainV)
+    }
+
+    private fun refreshParticipations(view: View?) {
+        val spinnerParticipationEvents = view?.findViewById<Spinner>(R.id.spinnerParticipationEvents)
+        if (spinnerParticipationEvents != null) {
+            GlobalScope.launch {
+                EventController().getAll(
+                        { events ->
+                            try {
+                                if (events != null) {
+                                    val adapter = activity?.let {
+                                        ArrayAdapter<Event>(
+                                                it,
+                                                android.R.layout.simple_spinner_item,
+                                                events
+                                        )
+                                    }
+                                    spinnerParticipationEvents.adapter = adapter
+                                } else {
+                                    val adapter = activity?.let {
+                                        ArrayAdapter<String>(
+                                                it,
+                                                android.R.layout.simple_spinner_item,
+                                                listOf("no evnets available")
+                                        )
+                                    }
+                                    spinnerParticipationEvents.adapter = adapter
+                                }
+                            } catch (ex: Throwable) {
+                                errorMessage(view, ex)
+                            }
+                        },
+                        { _, t ->
+                            errorMessage(view, t)
+                        })
             }
+        }
+    }
+
+    object OnSpinnerParticipationEventsSelected : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(
+                parentView: AdapterView<*>?,
+                selectedItemView: View,
+                position: Int,
+                id: Long
+        ) {
+            toggleScrollViewParticipation((parentView?.parent as View), View.VISIBLE)
+            toggleTxtViewNoParticipationSelected((parentView?.parent as View), View.INVISIBLE)
+            fillParticipationEditFields(parentView?.parent as View, parentView?.getItemAtPosition(position) as Event)
         }
 
         override fun onNothingSelected(parentView: AdapterView<*>?) {
-            val txtViewNoParticipationSelected = (parentView?.parent as View)?.findViewById<TextView>(R.id.txtViewNoParticipationSelected)
-            if (txtViewNoParticipationSelected != null) {
-                txtViewNoParticipationSelected.visibility = View.VISIBLE
+            toggleScrollViewParticipation((parentView?.parent as View), View.INVISIBLE)
+            toggleTxtViewNoParticipationSelected((parentView?.parent as View), View.VISIBLE)
+        }
+
+        private fun fillParticipationEditFields(view: View, event: Event) {
+            val scrollView = view.findViewById<ScrollView>(R.id.scrollViewParticipationSelection)
+            val listViewParticipationCompanies = scrollView?.findViewById<ListView>(R.id.listViewParticipationCompanies)
+            if (scrollView != null && listViewParticipationCompanies != null) {
+                GlobalScope.launch {
+                    ParticipationController().getAllByEvent(event.id!!,
+                            { participations ->
+                                try {
+                                    if (participations != null) {
+                                        val companies = participations.map { it.company }
+                                        for (i in 0 until listViewParticipationCompanies.adapter.count) {
+                                            if (companies.contains((listViewParticipationCompanies.getItemAtPosition(i) as Company))) {
+                                                listViewParticipationCompanies.setItemChecked(i, true)
+                                            } else {
+                                                listViewParticipationCompanies.setItemChecked(i, false)
+                                            }
+                                        }
+                                    }
+                                } catch (ex: Throwable) {
+                                    ParticipationFragment().errorMessage(view, ex)
+                                }
+                            },
+                            { _, t ->
+                                ParticipationFragment().errorMessage(view, t)
+                            })
+                }
+            }
+        }
+
+        fun toggleTxtViewNoParticipationSelected(view: View?, visible: Int) {
+            view?.findViewById<TextView>(R.id.txtViewNoParticipationSelected)?.visibility = visible
+        }
+
+        fun toggleScrollViewParticipation(view: View?, visible: Int) {
+            view?.findViewById<ScrollView>(R.id.scrollViewParticipationSelection)?.visibility = visible
+        }
+    }
+
+    private fun saveParticipationSelection(view: View?) {
+        val listViewParticipationCompanies = view?.findViewById<ListView>(R.id.listViewParticipationCompanies)
+        val newSelected : SparseBooleanArray? = listViewParticipationCompanies?.checkedItemPositions
+        var currentEvent : Event? = getCurrentSelectedEvent(view);
+        if (currentEvent != null && newSelected != null) {
+            GlobalScope.launch {
+                currentEvent.id?.let {
+                    ParticipationController().getAllByEvent(it,
+                            { participations ->
+                                try {
+                                    if (participations != null) {
+                                        val currentCompanies = participations.map { participation -> participation.company }
+                                        UserController().getAllByUserType(UserTypes.responsible,
+                                                { users ->
+                                                    try {
+                                                        if (users != null) {
+                                                            var responsibles : List<User> = users
+                                                            var selectedCompanies : MutableList<Company> = mutableListOf()
+                                                            for (i in 0 until newSelected.size()) {
+                                                                if (newSelected.get(i)) {
+                                                                    val selectedCompany = listViewParticipationCompanies?.getItemAtPosition(newSelected.keyAt(i)) as Company
+                                                                    selectedCompanies.add(selectedCompany)
+                                                                    if (!currentCompanies.contains(selectedCompany)) {
+                                                                        ParticipationController().save(Participation(System.currentTimeMillis(), 100.0, 0.0, "", currentEvent, selectedCompany, responsibles.random(), null, null),
+                                                                                {
+
+                                                                                },
+                                                                                { _, t ->
+                                                                                    ParticipationFragment().errorMessage(view, t)
+                                                                                })
+                                                                    }
+                                                                }
+                                                            }
+                                                            var notSelectedCompanies = currentCompanies.toMutableList()
+                                                            notSelectedCompanies.removeAll(selectedCompanies)
+                                                            notSelectedCompanies.toList()
+                                                            for (part in participations) {
+                                                                if (notSelectedCompanies.contains(part.company)) {
+                                                                    ParticipationController().delete(part.id!!,
+                                                                            {
+
+                                                                            },
+                                                                            { _, t ->
+                                                                                ParticipationFragment().errorMessage(view, t)
+                                                                            })
+                                                                }
+                                                            }
+                                                            refreshParticipations(view)
+                                                        }
+                                                    } catch (ex: Throwable) {
+                                                        errorMessage(view, ex)
+                                                    }
+                                                },
+                                                { _, t ->
+                                                    ParticipationFragment().errorMessage(view, t)
+                                                })
+                                    }
+                                } catch (ex: Throwable) {
+                                    ParticipationFragment().errorMessage(view, ex)
+                                }
+                            },
+                            { _, t ->
+                                ParticipationFragment().errorMessage(view, t)
+                            })
+                }
             }
         }
     }
 
-    private fun createParticipation(view: View) {
-
+    private fun selectAllParticipationCompanies(view: View?) {
+        val listViewParticipationCompanies = view?.findViewById<ListView>(R.id.listViewParticipationCompanies)
+        for (i in 0 until listViewParticipationCompanies?.adapter?.count!!) {
+                listViewParticipationCompanies?.setItemChecked(i, true)
+        }
     }
 
-    private fun errorMessage(view: View, t: Throwable) {
+    private fun unSelectAllParticipationCompanies(view: View?) {
+        val listViewParticipationCompanies = view?.findViewById<ListView>(R.id.listViewParticipationCompanies)
+        for (i in 0 until listViewParticipationCompanies?.adapter?.count!!) {
+            listViewParticipationCompanies?.setItemChecked(i, false)
+        }
+    }
+
+    private fun getCurrentSelectedEvent(view: View?): Event? {
+        return view?.findViewById<Spinner>(R.id.spinnerParticipationEvents)?.selectedItem as Event?
+    }
+
+    private fun createParticipation(view: View) {
+        findNavController().navigate(R.id.action_nav_participation_to_nav_participation_create)
+    }
+
+    private fun errorMessage(view: View?, t: Throwable) {
         println(t.message)
     }
 }

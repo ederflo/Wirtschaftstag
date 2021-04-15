@@ -5,4 +5,6 @@ data class TimeSlot(
     var starts: String?,
     var ends: String?,
     var maxParticipants: Int?
-) { }
+) {
+    override fun toString(): String = "$id - $starts - $ends"
+}

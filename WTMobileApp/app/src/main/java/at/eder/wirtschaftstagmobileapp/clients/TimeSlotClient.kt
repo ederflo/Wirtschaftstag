@@ -6,7 +6,7 @@ import retrofit2.http.*
 
 interface TimeSlotClient {
     companion object {
-        const val path = "/api/timeslots"
+        const val path = "/api/timeSlots"
     }
 
     @GET(path)

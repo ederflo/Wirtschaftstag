@@ -17,7 +17,12 @@ public class ParticipationController {
     private ParticipationServiceImpl svc;
 
     @GetMapping()
-    public List<Participation> getAllParticipations() { return svc.getAll(); }
+    public List<Participation> getAllParticipations(@RequestParam long eventId) {
+        if (eventId != -1) {
+            return svc.getByEventId(eventId);
+        }
+        return svc.getAll();
+    }
 
     @GetMapping("/{id}")
     public Participation getParticipationById(@PathVariable Long id) { return svc.getOne(id); }

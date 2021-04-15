@@ -17,7 +17,7 @@ public class UserController {
 
     @GetMapping()
     public List<User> getAllUsers(@RequestParam String userType) {
-        if (userType != null && !userType.isEmpty()) {
+        if (userType != null && !userType.isEmpty() && !userType.equals("all")) {
             return svc.getByUserType(userType);
         }
         return svc.getAll();

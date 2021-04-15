@@ -10,7 +10,10 @@ interface ParticipationClient {
     }
 
     @GET(path)
-    fun getAll() : Call<List<Participation>>
+    fun getAll(@Query("eventId") eventId: Long = -1) : Call<List<Participation>>
+
+    @GET(path)
+    fun getAllByEventId(@Query("eventId") eventId: Long) : Call<List<Participation>>
 
     @GET("${path}/{id}")
     fun getOneById(@Path("id") id: Long?): Call<Participation?>
@@ -18,4 +21,7 @@ interface ParticipationClient {
     @Headers("content-type: application/json")
     @PUT(path)
     fun save(@Body participation: Participation): Call<Participation>
+
+    @DELETE("${path}/{id}")
+    fun delete(@Path("id") id: Long?): Call<Boolean>
 }

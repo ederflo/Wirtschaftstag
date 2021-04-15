@@ -10,7 +10,7 @@ interface UserClient {
     }
 
     @GET(path)
-    fun getAll() : Call<List<User>>
+    fun getAll(@Query("userType") userType: String? = "all") : Call<List<User>>
 
     @GET(path)
     fun getAllByUserType(@Query("userType") userType: String?) : Call<List<User>>

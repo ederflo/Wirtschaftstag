@@ -1,4 +1,7 @@
 #!/bin/bash
 
-docker-compose up
-firefox localhost:8080
+echo "Starting docker container"
+	docker-compose up
+if [ $? -ge 1 ]; then 
+	exit
+fi

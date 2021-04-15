@@ -5,6 +5,8 @@ import java.io.File
 data class Mail(
     var id: Long?,
     var nr: Int?,
+    var sender: User?,
+    var receivers: List<User>?,
     var date: String?,
     var time: String?,
     var subject: String?,

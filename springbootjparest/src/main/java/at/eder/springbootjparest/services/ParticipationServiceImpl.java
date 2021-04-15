@@ -19,6 +19,10 @@ public class ParticipationServiceImpl implements ParticipationService {
         return repo.findAll();
     }
 
+    public List<Participation> getByEventId(long eventId) {
+        return repo.findByEventId(eventId);
+    }
+
     @Override
     public Participation getOne(Long id) {
         return repo.findById(id).get();

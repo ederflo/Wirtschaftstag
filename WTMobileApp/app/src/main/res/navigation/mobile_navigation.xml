@@ -59,6 +59,14 @@
             app:destination="@id/nav_department_create" />
     </fragment>
     <fragment
+        android:id="@+id/nav_department_create"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.department.DepartmentCreateFragment"
+        android:label="Abteilung erstellen" >
+        <action
+            android:id="@+id/action_nav_department_create_to_nav_department"
+            app:destination="@id/nav_department" />
+    </fragment>
+    <fragment
         android:id="@+id/nav_user"
         android:name="at.eder.wirtschaftstagmobileapp.ui.user.UserFragment"
         android:label="@string/menu_user"
@@ -80,18 +88,57 @@
         android:id="@+id/nav_mail"
         android:name="at.eder.wirtschaftstagmobileapp.ui.mail.MailFragment"
         android:label="@string/menu_mail"
-        tools:layout="@layout/fragment_mail" />
+        tools:layout="@layout/fragment_mail" >
+        <action
+            android:id="@+id/action_nav_mail_to_nav_mail_create"
+            app:destination="@id/nav_mail_create" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_mail_create"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.mail.MailCreateFragment"
+        android:label="E-Mail schreiben"
+        tools:layout="@layout/fragment_mail_create" >
+        <action
+            android:id="@+id/action_nav_mail_create_to_nav_mail"
+            app:destination="@id/nav_mail" />
+    </fragment>
     <fragment
         android:id="@+id/nav_participation"
         android:name="at.eder.wirtschaftstagmobileapp.ui.participation.ParticipationFragment"
         android:label="@string/menu_participation"
-        tools:layout="@layout/fragment_participation" />
-    <fragment
-        android:id="@+id/nav_department_create"
-        android:name="at.eder.wirtschaftstagmobileapp.ui.department.DepartmentCreateFragment"
-        android:label="Abteilung erstellen" >
+        tools:layout="@layout/fragment_participation" >
         <action
-            android:id="@+id/action_nav_department_create_to_nav_department"
-            app:destination="@id/nav_department" />
+            android:id="@+id/action_nav_participation_to_nav_participation_create"
+            app:destination="@id/nav_participation_edit" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_participation_edit"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.participation.ParticipationEditFragment"
+        android:label="Teilnahme erstellen"
+        tools:layout="@layout/fragment_participation_edit" >
+        <action
+            android:id="@+id/action_nav_participation_edit_to_nav_participation"
+            app:destination="@id/nav_participation" />
+        <argument
+            android:name="participation"
+            app:nullable="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_timeslot"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.timeSlot.TimeSlotFragment"
+        android:label="@string/menu_timeslot"
+        tools:layout="@layout/fragment_timeslot" >
+        <action
+            android:id="@+id/action_nav_timeslot_to_nav_timeslot_create"
+            app:destination="@id/nav_timeslot_create" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_timeslot_create"
+        android:name="at.eder.wirtschaftstagmobileapp.ui.timeSlot.TimeSlotCreateFragment"
+        android:label="Zeitfenster erstellen"
+        tools:layout="@layout/fragment_timeslot_create" >
+        <action
+            android:id="@+id/action_nav_timeslot_create_to_nav_timeslot"
+            app:destination="@id/nav_timeslot" />
     </fragment>
 </navigation>

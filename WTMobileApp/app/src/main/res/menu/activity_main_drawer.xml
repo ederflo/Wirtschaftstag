@@ -35,6 +35,11 @@
             android:title="@string/menu_participation" />
 
         <item
+            android:id="@+id/nav_timeslot"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_timeslot" />
+
+        <item
             android:id="@+id/nav_login"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/menu_login" />

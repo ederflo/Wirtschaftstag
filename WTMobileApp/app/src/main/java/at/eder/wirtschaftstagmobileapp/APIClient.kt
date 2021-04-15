@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object APIClient {
     var protocol = "http"
-    var ip = "172.19.144.1"
+    var ip = "192.168.153.1"
     var port = "8080"
 
     private val retrofit get() = Retrofit.Builder()

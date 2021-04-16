@@ -1,5 +1,6 @@
 package at.eder.wirtschaftstagmobileapp.ui.mail
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
@@ -9,9 +10,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.findFragment
 import at.eder.wirtschaftstagmobileapp.R
-import at.eder.wirtschaftstagmobileapp.controllers.CompanyController
-import at.eder.wirtschaftstagmobileapp.controllers.EventController
-import at.eder.wirtschaftstagmobileapp.controllers.ParticipationController
+import at.eder.wirtschaftstagmobileapp.controllers.*
 import at.eder.wirtschaftstagmobileapp.helpers.UiHelper
 import at.eder.wirtschaftstagmobileapp.models.*
 import at.eder.wirtschaftstagmobileapp.ui.mail.MailFragment.OnSpinnerMailEventsSelected.toggleScrollViewMail
@@ -19,11 +18,16 @@ import at.eder.wirtschaftstagmobileapp.ui.mail.MailFragment.OnSpinnerMailEventsS
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MailFragment : Fragment() {
     companion object {
         var allPrticipations : List<Participation> = listOf()
+        var allCompanies : List<Company> = listOf()
+        var selectedAllCompanies : Boolean = true
     }
 
     override fun onCreateView(
@@ -37,7 +41,9 @@ class MailFragment : Fragment() {
     override fun onViewCreated(mainV: View, savedInstanceState: Bundle?) {
         super.onViewCreated(mainV, savedInstanceState)
 
-        mainV?.findViewById<FloatingActionButton>(R.id.fab_refreshMails)?.setOnClickListener { _ -> refreshMails(mainV) }
+        mainV?.findViewById<FloatingActionButton>(R.id.fab_refreshMails)?.setOnClickListener { _ -> refreshMails(
+            mainV
+        ) }
         mainV?.findViewById<Button>(R.id.btnSendMailSelection)?.setOnClickListener {
             sendEmail(mainV);
         }
@@ -80,9 +86,23 @@ class MailFragment : Fragment() {
                                     }
                                     listViewMailParticipations.adapter = adapter
                                 }
-                                mainV.findViewById<Spinner>(R.id.spinnerMailEvents)?.onItemSelectedListener = OnSpinnerMailEventsSelected
-                                refreshMails(mainV)
-                                message("Mails successfully loaded")
+                                CompanyController().getAll(
+                                    { companies ->
+                                        try {
+                                            if (companies != null) {
+                                                allCompanies = companies
+                                                mainV.findViewById<Spinner>(R.id.spinnerMailEvents)?.onItemSelectedListener =
+                                                    OnSpinnerMailEventsSelected
+                                                refreshMails(mainV)
+                                                message("Mails successfully loaded")
+                                            }
+                                        } catch (ex: Throwable) {
+                                            errorMessage(ex)
+                                        }
+                                    },
+                                    { _, t ->
+                                        errorMessage(t)
+                                    })
                             } catch (ex: Throwable) {
                                 errorMessage(ex)
                             }
@@ -104,9 +124,17 @@ class MailFragment : Fragment() {
                         try {
                             if (events != null) {
                                 val eventsMutable = events.toMutableList()
-                                eventsMutable.add(0, Event(-1, "-- all companies --", null, null))
+                                eventsMutable.add(
+                                    0, Event(
+                                        -1,
+                                        "-- all companies --",
+                                        null,
+                                        null,
+                                        null
+                                    )
+                                )
                                 val adapter = activity?.let {
-                                    ArrayAdapter<Event>(
+                                    ArrayAdapter(
                                         it,
                                         android.R.layout.simple_spinner_item,
                                         eventsMutable
@@ -115,7 +143,7 @@ class MailFragment : Fragment() {
                                 spinnerMailEvents.adapter = adapter
                             } else {
                                 val adapter = activity?.let {
-                                    ArrayAdapter<String>(
+                                    ArrayAdapter(
                                         it,
                                         android.R.layout.simple_spinner_item,
                                         listOf("no evnets available")
@@ -146,20 +174,28 @@ class MailFragment : Fragment() {
             MailFragment().unSelectAllMailCompanies((parentView?.parent as View))
             val listViewMailParticipations = (parentView?.parent as View)?.findViewById<ListView>(R.id.listViewMailParticipations)
             val eventId = (parentView.findViewById<Spinner>(R.id.spinnerMailEvents).selectedItem as Event).id
-            var parts : List<Participation> = if (eventId == (-1).toLong()) {
-                allPrticipations
+            if (eventId == (-1).toLong()) {
+                val adapterParticipations = parentView?.findFragment<MailFragment>().activity?.let {
+                    ArrayAdapter(
+                        it,
+                        android.R.layout.simple_list_item_multiple_choice,
+                        allCompanies
+                    )
+                }
+                listViewMailParticipations.adapter = adapterParticipations
+                selectedAllCompanies = true
             } else {
-                allPrticipations.filter { x -> x.event?.id ==  eventId}
-            }
+                val adapterParticipations = parentView?.findFragment<MailFragment>().activity?.let {
+                    ArrayAdapter(
+                        it,
+                        android.R.layout.simple_list_item_multiple_choice,
+                        allPrticipations.filter { x -> x.event?.id == eventId }
+                    )
+                }
+                listViewMailParticipations.adapter = adapterParticipations
+                selectedAllCompanies = false
 
-            val adapterParticipations = parentView?.findFragment<MailFragment>().activity?.let {
-                ArrayAdapter<Participation>(
-                    it,
-                    android.R.layout.simple_list_item_multiple_choice,
-                    parts
-                )
             }
-            listViewMailParticipations.adapter = adapterParticipations
         }
 
         override fun onNothingSelected(parentView: AdapterView<*>?) {
@@ -181,10 +217,84 @@ class MailFragment : Fragment() {
         val newSelected : SparseBooleanArray? = listViewMailCompanies?.checkedItemPositions
         var currentEvent : Event? = getCurrentSelectedEvent(view);
         if (currentEvent != null && newSelected != null) {
-            var selectedCompanies : MutableList<Company> = mutableListOf()
-            for (i in 0 until newSelected.size())
-                if (newSelected.get(i))
-                    selectedCompanies.add(listViewMailCompanies?.getItemAtPosition(newSelected.keyAt(i)) as Company)
+            if (selectedAllCompanies) {
+                var selectedCompanies : MutableList<Company> = mutableListOf()
+                for (i in 0 until newSelected.size())
+                    if (newSelected.get(i))
+                        selectedCompanies.add(listViewMailCompanies?.getItemAtPosition(newSelected.keyAt(i)) as Company)
+                GlobalScope.launch {
+                    UserController().getAllByUserType(UserTypes.admin,
+                        { users ->
+                            try {
+                                if (users != null) {
+                                    val subject = view.findViewById<EditText>(R.id.plainTextWriteMailSubject).text.toString()
+                                    val content = view.findViewById<EditText>(R.id.plainTextWriteMailContent).text.toString()
+                                    var intent = Intent(Intent.ACTION_SEND_MULTIPLE)
+                                    intent.type = "message/rfc822"
+                                    intent.putExtra(Intent.EXTRA_EMAIL, allCompanies.map {r -> r.email }?.toTypedArray() )
+                                    intent.putExtra(Intent.EXTRA_SUBJECT, subject)
+                                    intent.putExtra(Intent.EXTRA_TEXT, content)
+                                    try {
+                                        startActivityForResult(Intent.createChooser(intent, "Sending Mails..."), 69)
+                                    }
+                                    catch (t: Throwable) {
+                                        errorMessage(t)
+                                    }
+                                }
+                            } catch (ex: Throwable) {
+                                errorMessage(ex)
+                            }
+                        },
+                        { _, t ->
+                            errorMessage(t)
+                        })
+                }
+            } else {
+                var selectedParticipations : MutableList<Participation> = mutableListOf()
+                for (i in 0 until newSelected.size())
+                    if (newSelected.get(i))
+                        selectedParticipations.add(listViewMailCompanies?.getItemAtPosition(newSelected.keyAt(i)) as Participation)
+                GlobalScope.launch {
+                    UserController().getAllByUserType(UserTypes.admin,
+                        { users ->
+                            try {
+                                if (users != null) {
+                                    val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+                                    val timeFormat = SimpleDateFormat("hh:mm:ss")
+                                    val currentDate = dateFormat.format(Date())
+                                    val currentTime = timeFormat.format(Date())
+                                    val subject = view.findViewById<EditText>(R.id.plainTextWriteMailSubject).text.toString()
+                                    val content = view.findViewById<EditText>(R.id.plainTextWriteMailContent).text.toString()
+                                    MailController().save(Mail(System.currentTimeMillis(), System.currentTimeMillis().toInt(), users.random(),
+                                        selectedParticipations.map { it.responsible } as List<User>, currentDate, currentTime, subject, content, null, null, null),
+                                        { mail ->
+                                            if (mail != null) {
+                                                var intent = Intent(Intent.ACTION_SEND_MULTIPLE)
+                                                intent.type = "message/rfc822"
+                                                intent.putExtra(Intent.EXTRA_EMAIL, mail.receivers?.map {r -> r.email }?.toTypedArray() )
+                                                intent.putExtra(Intent.EXTRA_SUBJECT, mail.subject)
+                                                intent.putExtra(Intent.EXTRA_TEXT, mail.content)
+                                                try {
+                                                    startActivityForResult(Intent.createChooser(intent, "Sending Mails..."), 69)
+                                                }
+                                                catch (t: Throwable) {
+                                                    errorMessage(t)
+                                                }
+                                            }
+                                        },
+                                        { _, t ->
+                                            errorMessage(t)
+                                        })
+                                }
+                            } catch (ex: Throwable) {
+                                errorMessage(ex)
+                            }
+                        },
+                        { _, t ->
+                            errorMessage(t)
+                        })
+                }
+            }
         }
     }
 
@@ -193,7 +303,7 @@ class MailFragment : Fragment() {
         for (i in 0 until listViewMailCompanies?.adapter?.count!!) {
             listViewMailCompanies?.setItemChecked(i, true)
         }
-        message("All participations selected")
+        message("All participations/companies selected")
     }
 
     private fun unSelectAllMailCompanies(view: View?) {
@@ -201,7 +311,7 @@ class MailFragment : Fragment() {
         for (i in 0 until listViewMailParticipations?.adapter?.count!!) {
             listViewMailParticipations?.setItemChecked(i, false)
         }
-        message("All participations unselected")
+        message("All participations/companies unselected")
     }
 
     private fun getCurrentSelectedEvent(view: View?): Event? {

@@ -141,6 +141,7 @@ class EventFragment : Fragment() {
             scrollView?.findViewById<EditText>(R.id.plainTextEditEventId)?.setText(event.id.toString())
             scrollView?.findViewById<EditText>(R.id.plainTextEditEventLabel)?.setText(event.label)
             scrollView?.findViewById<EditText>(R.id.plainTextEditEventDate)?.setText(event.date)
+            scrollView?.findViewById<EditText>(R.id.plainTextEditEventDefaultPrice)?.setText(event.defaultPrice.toString())
             var spinnerOrganisers = scrollView?.findViewById<Spinner>(R.id.spinnerEditEventOrganiser)
             if (spinnerOrganisers != null && spinnerOrganisers.adapter != null) {
                 var found = false
@@ -169,9 +170,10 @@ class EventFragment : Fragment() {
         var id = scrollView?.findViewById<EditText>(R.id.plainTextEditEventId)?.text.toString().toLong()
         var label = scrollView?.findViewById<EditText>(R.id.plainTextEditEventLabel)?.text.toString()
         var date = scrollView?.findViewById<EditText>(R.id.plainTextEditEventDate)?.text.toString()
+        var defaultPrice = scrollView?.findViewById<EditText>(R.id.plainTextEditEventDefaultPrice)?.text.toString().toDouble()
         var organiser = scrollView?.findViewById<Spinner>(R.id.spinnerEditEventOrganiser)?.selectedItem as User
         GlobalScope.launch {
-            EventController().save(Event(id.toLong(), label, date, organiser),
+            EventController().save(Event(id.toLong(), label, date, defaultPrice, organiser),
                     {
                         refreshEvents(view)
                         message("Event '$label' sucessfully saved")

@@ -72,9 +72,10 @@ class EventCreateFragment : Fragment() {
         var scrollView = view?.findViewById<ScrollView>(R.id.scrollViewEventCreate)
         var label = scrollView?.findViewById<EditText>(R.id.plainTextCreateEventLabel)?.text.toString()
         var date = scrollView?.findViewById<EditText>(R.id.plainTextCreateEventDate)?.text.toString()
+        var defaultPrice = scrollView?.findViewById<EditText>(R.id.plainTextCreateEventDefaultPrice)?.text.toString().toDouble()
         var organiser = scrollView?.findViewById<Spinner>(R.id.spinnerCreateEventOrganiser)?.selectedItem as User
         GlobalScope.launch {
-            EventController().save(Event(System.currentTimeMillis(), label, date, organiser),
+            EventController().save(Event(System.currentTimeMillis(), label, date, defaultPrice, organiser),
                     {
                         findNavController().navigate(R.id.action_nav_event_create_to_nav_event)
                         message("Event '$label' sucessfully created")

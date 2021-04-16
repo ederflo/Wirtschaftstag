@@ -219,10 +219,9 @@ class ParticipationFragment : Fragment() {
                                                                     val selectedCompany = listViewParticipationCompanies?.getItemAtPosition(newSelected.keyAt(i)) as Company
                                                                     selectedCompanies.add(selectedCompany)
                                                                     if (!currentCompanies.contains(selectedCompany)) {
-                                                                        ParticipationController().save(Participation(System.currentTimeMillis(), 100.0, 0.0, "", currentEvent, selectedCompany, responsibles.random(), null, null),
-                                                                                {
-
-                                                                                },
+                                                                        ParticipationController().save(Participation(System.currentTimeMillis(), 100.0, 0.0, "",
+                                                                            currentEvent, selectedCompany, responsibles.random(), null, null),
+                                                                                { },
                                                                                 { _, t ->
                                                                                     ParticipationFragment().errorMessage(t)
                                                                                 })
@@ -235,9 +234,7 @@ class ParticipationFragment : Fragment() {
                                                             for (part in participations) {
                                                                 if (notSelectedCompanies.contains(part.company)) {
                                                                     ParticipationController().delete(part.id!!,
-                                                                            {
-
-                                                                            },
+                                                                            { },
                                                                             { _, t ->
                                                                                 ParticipationFragment().errorMessage(t)
                                                                             })

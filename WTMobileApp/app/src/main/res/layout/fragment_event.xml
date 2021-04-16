@@ -101,6 +101,25 @@
                 android:text="Date" />
 
             <TextView
+                android:id="@+id/txtViewEditEventDefaultPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="25dp"
+                android:text="Standardpreis:" />
+
+            <EditText
+                android:id="@+id/plainTextEditEventDefaultPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="25dp"
+                android:ems="10"
+                android:inputType="number" />
+
+            <TextView
                 android:id="@+id/txtViewEditEventOrganiser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

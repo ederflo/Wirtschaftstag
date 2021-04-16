@@ -4,6 +4,7 @@ data class Event (
     var id: Long?,
     var label: String?,
     var date: String?,
+    var defaultPrice : Double?,
     var organiser: User?
 ) {
     override fun toString(): String {

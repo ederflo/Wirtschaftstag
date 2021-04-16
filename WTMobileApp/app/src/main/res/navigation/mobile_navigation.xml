@@ -114,8 +114,8 @@
     <fragment
         android:id="@+id/nav_participation_edit"
         android:name="at.eder.wirtschaftstagmobileapp.ui.participation.ParticipationEditFragment"
-        android:label="Teilnahme erstellen"
-        tools:layout="@layout/fragment_participation_edit" >
+        android:label="Teilnahme Details"
+        tools:layout="@layout/fragment_participation_edit">
         <action
             android:id="@+id/action_nav_participation_edit_to_nav_participation"
             app:destination="@id/nav_participation" />
